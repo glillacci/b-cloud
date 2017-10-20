@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Clean up</title>
+</head>
+
+<body>
+
+<h1>Clean up</h1>
+
+<p>Users you follow:</p>
+<p><textarea id = "following" rows = "10" cols = "80"></textarea></p>
+
+<p>Users that follow you:</p>
+<p><textarea id = "followers" rows = "10" cols = "80"></textarea></p>
+
+<p>Users you follow that are not following you back:</p>
+<p><textarea id = "nonfollowers" rows = "20" cols = "80"></textarea></p>
+<p></p>
+<p></p>
+
+<p><button onclick = "cleanUp()">Start clean up</button>
+  <button onclick = "stopCleanUp()">Stop clean up</button>
+  <textarea id = "waiting" rows = "1" cols = "50"></textarea></p>
+
+<p></p>
+<p>Next user to unfollow: </p>
+<p><textarea id = "nextToUnfollow" rows = "10" cols = "80"></textarea></p>
+
+<p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+
+
+<!-- The following code provides integration with Firebase -->
+<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+<script src="firebase_init.js"></script>
+
+
+<!-- This page requires authentication: add code to support it -->
+<script src="oauth2.js"></script>
+
+
+<!-- The following code implement the functionalites of this page -->
+<script>
+// Read access token from cookie
+var access_token = document.cookie.split("=")[1];
+
+// Build following list
+var xhr1 = new XMLHttpRequest();
+var url = "https://api.mixcloud.com/b-fore/following/?limit=200";
+var following = [];
+var done1 = false;
+
+xhr1.onreadystatechange = function() {
+    if (xhr1.readyState == 4) {
+    	var obj = JSON.parse (xhr1.responseText);
+
+		// Process followers on this page
+		for (i = 0; i < obj.data.length; i++) {
+			document.getElementById("following").value += (obj.data[i].username + ", ");
+			following[following.length] = obj.data[i].username;
+		}
+
+		// Check if we are done
+		if (obj.paging.next != null) {
+			url = obj.paging.next;
+			xhr1.open ("GET", url, true);
+			xhr1.send (null);
+		}
+		else {
+			done1 = true;
+			findNonfollowers();
+		}
+   	}
+}
+
+xhr1.open("GET", url, true);
+xhr1.send(null);
+
+
+// Build follower list
+var xhr2 = new XMLHttpRequest();
+var url = "https://api.mixcloud.com/b-fore/followers/?limit=200";
+var followers = [];
+var done2 = false;
+
+xhr2.onreadystatechange = function() {
+    if (xhr2.readyState == 4) {
+    	var obj = JSON.parse (xhr2.responseText);
+
+		// List followers on this page
+		for (i = 0; i < obj.data.length; i++) {
+			document.getElementById("followers").value += (obj.data[i].username + ", ");
+			followers[followers.length] = obj.data[i].username;
+		}
+
+		// Check if we are done
+		if (obj.paging.next != null) {
+			url = obj.paging.next;
+			xhr2.open ("GET", url, true);
+			xhr2.send (null);
+		}
+		else {
+			done2 = true;
+			findNonfollowers();
+		}
+   	}
+}
+
+xhr2.open("GET", url, true);
+xhr2.send(null);
+
+
+// Compare the 2 lists to find the non followers
+var nonfollowers = [];
+
+function findNonfollowers() {
+	if (done1 == true && done2 == true) {
+		// Sort the user lists
+		followers.sort();
+		following.sort();
+
+		// Scan the following list to see if they follow back
+		for (i = 0; i < following.length; i++)
+		{
+			if (followers.indexOf(following[i]) == -1)
+			{
+				document.getElementById("nonfollowers").value += (following[i] + ", ");
+				nonfollowers[nonfollowers.length] = following[i];
+			}
+		}
+	}
+}
+
+
+// Perform the cleanup
+function cleanUp() {
+	unfollowNext();
+	INT = setInterval (unfollowNext, 5000);
+}
+
+// This function is called repeatedly until all users have been unfollowed
+var prog = 0;
+
+function unfollowNext (){
+	document.getElementById("nextToUnfollow").value = nonfollowers[prog] + "\n";
+
+	// Get user info from API
+	var xhr = new XMLHttpRequest();
+
+	xhr.onreadystatechange = function() {
+	    if (xhr.readyState == 4) {
+	    	var obj = JSON.parse (xhr.responseText);
+
+			// Compute F-ratio of user
+			var fcount = obj.follower_count;
+			var fratio = obj.following_count/obj.follower_count;
+			document.getElementById("nextToUnfollow").value += ("Follower count of user: " + fcount + "\n");
+			document.getElementById("nextToUnfollow").value += ("F-ratio of user: " + fratio + "\n");
+
+			// Decide what to do
+			if (fcount >= 100 && fratio <= 1) {
+				// User has celebrity status and will be skipped
+				document.getElementById("nextToUnfollow").value += ("User will be SKIPPED\n");
+			}
+			else {
+				// User will be unfollowed
+				document.getElementById("nextToUnfollow").value += ("User will be UNFOLLOWED\n");
+				performUnfollow(nonfollowers[prog]);
+			}
+
+			// Check if we are done
+			prog = prog + 1;
+			if (prog == nonfollowers.length) {
+				clearInterval (INT);
+			}
+	   	}
+	}
+
+	xhr.open ("GET", "https://api.mixcloud.com/" + nonfollowers[prog] + "/", true);
+	xhr.send (null);
+}
+
+
+// This function sends the actual DELETE request to the Mixcloud server
+function performUnfollow (uname) {
+	// Construct DELETE request
+	var xhr3 = new XMLHttpRequest();
+	var url3 = "https://api.mixcloud.com/" + uname + "/follow/?access_token=" + access_token;
+
+	xhr3.onreadystatechange = function() {
+	    if (xhr3.readyState == 4) {
+	    		document.getElementById("nextToUnfollow").value += xhr3.responseText;
+
+	    		var obj = JSON.parse (xhr3.responseText);
+
+	    		// Check the result of the request
+		    	if ("error" in obj) {
+		    		if ("retry_after" in obj.error) {
+		    			// There was a rate limit problem, we need to wait
+		    			// Clear interval for following users
+		    			clearInterval (INT);
+		    			// Set a new interval for waiting
+		    			INT2 = setInterval (waitBox, 1000);
+		    			// Set the number of second to wait
+		    			sec = obj.error.retry_after+5;
+		    		}
+		    	}
+			}
+	}
+
+	xhr3.open ("POST", url3, true);
+	xhr3.setRequestHeader ("Content-type","application/x-www-form-urlencoded");
+	xhr3.send ("method=delete");
+}
+
+
+// Stop the clean up
+function stopCleanUp() {
+	if (INT) {
+		clearInterval (INT);
+	}
+}
+
+
+// Waiting function
+function waitBox () {
+	// Update the wait box
+	document.getElementById ("waiting").value = "Waiting: " + sec + " seconds remaining...";
+	sec--;
+	if (sec==0) {
+		document.getElementById ("waiting").value = "";
+		prog = prog - 1;
+		clearInterval (INT2);
+		INT = setInterval (unfollowNext, 5000);
+	}
+}
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Find Cloudcasts</title>
+</head>
+
+<body>
+
+<h1>Find latest cloudcasts of highlighted users</h1>
+
+<p>Highlighted users (one per line):</p>
+<p><textarea id = "hus" rows = "10" cols = "80">All_In
+Bawaka
+Concept_DJ
+DJTJDJTJ
+DJ_ETA
+DjMaxvanNeudeck
+Gerloni_Ludwig_Federico
+Kawenzo
+MaLeeCoDeeJ
+OrisAKaTongadj
+RTT1
+betobarreiro
+dejanklemenc
+djOliD
+djbrunomartino
+dsagazio
+dunny-sciuto
+frederic-miotti
+geza-saranyik
+giovannivarlotta
+johnward9210256
+josecarlos3139
+kalcuelus_plus
+michaelbayly
+paul-platts
+simon-h
+soulseodeej
+tallismantra
+MidiMod
+tuchowsky
+BenBurridge
+Dalorex
+EvenGodWantsToBeADj
+Elcat
+JohnnySwitchblade
+Goldalia
+alex-draxel
+eduardo-diamante
+sroel_bemeyle
+the_minnorkka_dj
+gerard-byrne
+Goingrey
+mia-amare
+ErikdjE4Energy
+EdgarStorm
+INVINTA
+xeroxx
+giovanniparisi7
+mnkalil
+anna-corrigan
+djmas2004
+yazcine
+mino-albanese
+vera-fernandez
+rene_bacus
+Maartenmetz
+mirtakinex
+ariel_lander
+klashmusic
+zeizei
+MonsieurCortez
+URP
+superbuff76
+randygodsey
+Seb_du_Bollwerk
+medectric
+seantonning
+arrydidi</textarea></p>
+
+<p><button onclick = "loadCcast()">Load cloudcasts</button></p>
+
+<p>Cloudcast report (by age):</p>
+<p><textarea id = "rep" rows = "30" cols = "80"></textarea></p>
+
+<p></p>
+<p></p>
+<p>Array indices. First: <textarea id = "first" rows = "1" cols = "3">0</textarea> Last: <textarea id = "last" rows = "1" cols = "3">9</textarea>
+<p><button onclick = "openTabs()">Open tabs</button></p>
+
+<p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+
+
+<!-- The following code provides integration with Firebase -->
+<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+<script src="firebase_init.js"></script>
+
+
+<!-- This page requires authentication: add code to support it -->
+<script src="oauth2.js"></script>
+
+
+<!-- The following code implement the functionalites of this page -->
+<script>
+
+// Read access token from cookie
+var access_token = document.cookie.split("=")[1];
+
+// Declare global variables
+var husr = [];
+var ups = [];
+var ccurl = [];
+var age = [];
+
+// Load favoriting users of cloudcast
+function loadCcast() {
+	// Get the highlighted users from the text box
+	husr = document.getElementById("hus").value.split("\n");
+	// Sort users and replace list in the text box with sorted list
+	husr.sort();
+	document.getElementById("hus").value = husr;
+
+	// Start a counter to scan through the highlighted users
+	var i = 0;
+
+	// Form URL of user
+	url = "https://api.mixcloud.com/" + husr[i] + "/cloudcasts/?access_token=" + access_token;
+	console.log(url);
+
+	// Define new XMLHttpRequest variable
+	var xhr1 = new XMLHttpRequest();
+
+	// Process request
+	xhr1.onreadystatechange = function() {
+	    if (xhr1.readyState == 4) {
+	    	var obj = JSON.parse (xhr1.responseText);
+
+	    	// Get current date
+			var dw = new Date ();
+			// Subtract 7 days from current date
+			dw.setDate(dw.getDate()-7);
+
+			// Find cloudcasts on current page (CURRENT PAGE ONLY!!!) that are not older than 1 week and not already favorited
+			for (k = 0; k < obj.data.length; k++) {
+				// Get date of cloudcast
+				var dc = new Date (obj.data[k].created_time);
+
+				// Check if cloudcast is not older than one week AND not favorites
+				if (dc.valueOf() >= dw.valueOf() && obj.data[k].favorited==0) {
+					document.getElementById("rep").value += "https://www.mixcloud.com/" + husr[i] + "/uploads/\n";
+					// Add the same uploader URL to the ccurl array
+					ccurl[ccurl.length] = "https://www.mixcloud.com/" + husr[i] + "/uploads/";
+					// Add the age of the cloudcast to the age array
+					age[age.length] = dc.valueOf();
+				}
+			}
+
+			// Increase the uploader counter
+			i++;
+
+			// Check if we are NOT done
+			if (i < husr.length) {
+				// Keep going
+				url = "https://api.mixcloud.com/" + husr[i] + "/cloudcasts/?access_token=" + access_token;
+				console.log(url);
+				xhr1.open ("GET", url, true);
+				xhr1.send (null);
+			}
+			else {
+				// Create a sorted copy of age
+				var ageS = age.slice();
+				ageS.sort();
+
+				// Clear the rep text area
+				document.getElementById("rep").value = "";
+
+				// Display the URLs by age
+				for (l = 0; l < ageS.length; l++) {
+					// Find the index of the current element of ageS in age
+					IND = age.indexOf(ageS[l]);
+					// Add the respective URL to the text area
+					document.getElementById("rep").value += ccurl[IND] + "\n";
+				}
+
+				// Put the list of uploads in the array ups
+				ups = document.getElementById("rep").value.split("\n");
+			}
+	   	}
+	}
+
+	// Send initial request
+	xhr1.open ("GET", url, true);
+	xhr1.send (null);
+}
+
+
+// Open tabs with the non-returning favorites
+function openTabs() {
+	var first = document.getElementById("first").value;
+	var last = document.getElementById("last").value;
+
+	// Fix boundaries if needed
+	first = Math.max (0, first);
+	document.getElementById("first").value = first;
+	last = Math.min (last, (ups.length-1));
+	document.getElementById("last").value = last;
+
+	for (i = first; i <= last; i++) {
+		console.log(i);
+		url = ups[i];
+		window.open(url,i);
+	}
+}
+
+
+</script>
+
+</body>
+</html>

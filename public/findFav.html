@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Analyze Cloudcast Favorites</title>
+</head>
+
+<body>
+
+<h1>Analyze Cloudcast Favorites</h1>
+
+ <p>API key(s) of previous cloudcast(s) (one per line):</p>
+<!--  <p><textarea id = "url" rows = "10" cols = "80">http://api.mixcloud.com/b-fore/b-fore-switzerland-mazdasounds/favorites/ -->
+<!--  http://api.mixcloud.com/b-fore/b-fore-the-music-15/favorites/ -->
+<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-14-2015-year-in-review/favorites/ -->
+<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-13/favorites/ -->
+<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-12-one-year-anniversary-episode/favorites/ -->
+<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-11/favorites/ -->
+<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-10/favorites/ -->
+<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-9/favorites/ -->
+<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-8/favorites/ -->
+<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-7/favorites/ -->
+<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-6/favorites/ -->
+<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-5/favorites/ -->
+<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-4/favorites/ -->
+<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-3/favorites/ -->
+<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-2/favorites/ -->
+<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-1/favorites/</textarea></p> -->
+
+<p><textarea id = "url" rows = "10" cols = "80">http://api.mixcloud.com/b-fore/feeling-like-nu-3/favorites/
+http://api.mixcloud.com/b-fore/dj-awards-2015-bedroom-dj-competition-b-fore/favorites/
+http://api.mixcloud.com/b-fore/feeling-like-nu-2/favorites/
+http://api.mixcloud.com/b-fore/feeling-like-nu-1/favorites/</textarea></p>
+
+<p>API key of current cloudcast:</p>
+<p><textarea id = "url2" rows = "2" cols = "80">http://api.mixcloud.com/b-fore/honda-tt-revolution-2016/favorites/</textarea></p>
+
+<p><button onclick = "loadFavs()">Analyze favorites</button></p>
+
+<p>Previous favorites:</p>
+<p><textarea id = "prev" rows = "10" cols = "80"></textarea></p>
+
+<p>Current favorites:</p>
+<p><textarea id = "curr" rows = "10" cols = "80"></textarea></p>
+
+<p>Returing favorites:</p>
+<p><textarea id = "ret" rows = "10" cols = "80"></textarea></p>
+
+<p>Non-returing favorites:</p>
+<p><textarea id = "nret" rows = "10" cols = "80"></textarea></p>
+
+<p>New favorites:</p>
+<p><textarea id = "newfav" rows = "10" cols = "80"></textarea></p>
+
+<p></p>
+<p></p>
+<p>Array indices. First: <textarea id = "first" rows = "1" cols = "3">0</textarea> Last: <textarea id = "last" rows = "1" cols = "3">9</textarea>
+<p><button onclick = "openTabs()">Open tabs NON-RETURNING</button></p>
+<p><button onclick = "openTabsNF()">Open tabs NEW</button></p>
+<p><button onclick = "openTabsRF()">Open tabs RETURNING</button></p>
+
+<p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+
+
+<!-- The following code provides integration with Firebase -->
+<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+<script src="firebase_init.js"></script>
+
+
+<!-- The following code implement the functionalites of this page -->
+<script>
+// Declare global variables
+var favs_curr = [];
+var favs_old = [];
+var favs_ret = [];
+var favs_nret = [];
+var favs_new = [];
+var nonfollowed = [];
+var done1 = false;
+var done2 = false;
+
+// Load favoriting users of previous podcasts
+function loadFavs() {
+	// Build array of previous cloudcast URLs
+	var urls = document.getElementById("url").value.split("\n");
+
+	// Find favorites of old cloudcast
+	var xhr1 = new XMLHttpRequest();
+	var j = 0;
+
+	xhr1.onreadystatechange = function() {
+	    if (xhr1.readyState == 4) {
+	    	var obj = JSON.parse (xhr1.responseText);
+
+			// Process followers on this page
+			for (i = 0; i < obj.data.length; i++) {
+				document.getElementById("prev").value += (obj.data[i].username + ", ");
+				favs_old[favs_old.length] = obj.data[i].username;
+			}
+
+			// Check if we are done
+			if (obj.paging.next != null) {
+				url = obj.paging.next;
+				xhr1.open ("GET", url, true);
+				xhr1.send (null);
+			}
+			else {
+				j++;
+				console.log(j);
+				if (j < urls.length) {
+					xhr1.open ("GET", urls[j], true);
+					xhr1.send (null);
+				}
+				else {
+					done1 = true;
+					analyzeFavs();
+				}
+			}
+	   	}
+	}
+
+	console.log(j);
+	xhr1.open ("GET", urls[j], true);
+	xhr1.send (null);
+
+
+	// Find favorites of new cloudcast
+	var xhr2 = new XMLHttpRequest();
+	var url2 = document.getElementById("url2").value;
+
+	xhr2.onreadystatechange = function() {
+	    if (xhr2.readyState == 4) {
+	    	var obj = JSON.parse (xhr2.responseText);
+
+			// Process followers on this page
+			for (i = 0; i < obj.data.length; i++) {
+				document.getElementById("curr").value += (obj.data[i].username + ", ");
+				favs_curr[favs_curr.length] = obj.data[i].username;
+			}
+
+			// Check if we are done
+			if (obj.paging.next != null) {
+				url = obj.paging.next;
+				xhr2.open ("GET", url, true);
+				xhr2.send (null);
+			}
+			else {
+				done2 = true;
+				analyzeFavs();
+			}
+	   	}
+	}
+
+	xhr2.open ("GET", url2, true);
+	xhr2.send (null);
+}
+
+
+// Analyze favorites
+function analyzeFavs () {
+	if (done1 == true && done2 == true) {
+		// Sort the arrays
+		//favs_old.sort();
+		//favs_curr.sort();
+
+		// Remove duplicates from array favs_old
+		i = 0;
+		while (i < favs_old.length) {
+			j = 0;
+			while (favs_old[i] == favs_old[i+j+1]) {
+				j++;
+			}
+			favs_old.splice(i,j);
+			i++;
+		}
+
+		// Display processed arrays
+		document.getElementById("prev").value = favs_old;
+		document.getElementById("curr").value = favs_curr;
+
+		// Find returning favorites and new favorites
+		for (i = 0; i < favs_curr.length; i++) {
+			if (favs_old.indexOf(favs_curr[i]) != -1) {
+				favs_ret[favs_ret.length] = favs_curr[i];
+				document.getElementById("ret").value += (favs_curr[i] + ", ");
+			}
+			else {
+				favs_new[favs_new.length] = favs_curr[i];
+				document.getElementById("newfav").value += (favs_curr[i] + ", ");
+			}
+		}
+
+		// Find non-returning favorites
+		for (i = 0; i < favs_old.length; i++) {
+			if (favs_ret.indexOf (favs_old[i]) == -1) {
+				favs_nret[favs_nret.length] = favs_old[i];
+				document.getElementById("nret").value += (favs_old[i] + ", ");
+			}
+		}
+	}
+}
+
+
+// Open tabs with the non-returning favorites
+function openTabs() {
+	var first = document.getElementById("first").value;
+	var last = document.getElementById("last").value;
+
+	// Fix boundaries if needed
+	first = Math.max (0, first);
+	document.getElementById("first").value = first;
+	last = Math.min (last, (favs_nret.length-1));
+	document.getElementById("last").value = last;
+
+	for (i = first; i <= last; i++) {
+		console.log(i);
+		url = "https://www.mixcloud.com/" + favs_nret[i] + "/";
+		window.open(url,i);
+	}
+}
+
+//Open tabs with the NEW favorites
+function openTabsNF() {
+	var first = document.getElementById("first").value;
+	var last = document.getElementById("last").value;
+
+	// Fix boundaries if needed
+	first = Math.max (0, first);
+	document.getElementById("first").value = first;
+	last = Math.min (last, (favs_new.length-1));
+	document.getElementById("last").value = last;
+
+	for (i = first; i <= last; i++) {
+		console.log(i);
+		url = "https://www.mixcloud.com/" + favs_new[i] + "/";
+		window.open(url,i);
+	}
+}
+
+//Open tabs with the RETURNING favorites
+function openTabsRF() {
+	var first = document.getElementById("first").value;
+	var last = document.getElementById("last").value;
+
+	// Fix boundaries if needed
+	first = Math.max (0, first);
+	document.getElementById("first").value = first;
+	last = Math.min (last, (favs_ret.length-1));
+	document.getElementById("last").value = last;
+
+	for (i = first; i <= last; i++) {
+		console.log(i);
+		url = "https://www.mixcloud.com/" + favs_ret[i] + "/";
+		window.open(url,i);
+	}
+}
+
+
+</script>
+
+</body>
+</html>

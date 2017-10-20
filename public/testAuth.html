@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+
+<body>
+
+<h1>Test OAuth2 authentication</h1>
+
+<p>Authenticated user information:</p>
+<p><textarea id = "userdata" rows = "10" cols = "80"></textarea></p>
+
+<p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+
+
+<!-- The following code provides integration with Firebase -->
+<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+<script src="firebase_init.js"></script>
+
+
+<!-- This page requires authentication: add code to support it -->
+<script src="oauth2.js"></script>
+
+
+<!-- The following code implement the functionalites of this page -->
+<script>
+
+// Read access token from cookie
+var access_token = document.cookie.split("=")[1];
+
+// Create request to retrieve user data
+var userDataRequest = new XMLHttpRequest();
+var userDataRequestURL = "https://api.mixcloud.com/me/?access_token=" +
+  access_token;
+
+// Handle events triggered by changes in readyState of configFileRequest
+userDataRequest.onreadystatechange = function() {
+  // If request is complete
+  if (userDataRequest.readyState == 4) {
+    // Read the user data
+    var userData = JSON.parse (userDataRequest.responseText);
+    // Display user info
+    document.getElementById("userdata").value = "User name: " +
+      userData.name + "\n";
+    document.getElementById("userdata").value += "Follower count: " +
+      userData.follower_count + "\n";
+    document.getElementById("userdata").value += "Followed count: " +
+      userData.following_count;
+  }
+}
+
+// Initialize and send the request
+userDataRequest.open("GET", userDataRequestURL, true);
+userDataRequest.send(null);
+
+</script>
+
+</body>
+</html>

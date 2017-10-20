@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+
+<h1>List followers</h1>
+
+<p><textarea id = "followers" rows = "20" cols = "80"></textarea></p>
+
+
+<!-- The following code provides integration with Firebase -->
+<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+<script src="firebase_init.js"></script>
+
+
+<!-- The following code implement the functionalites of this page -->
+<script>
+var xhr = new XMLHttpRequest();
+var url = "https://api.mixcloud.com/b-fore/followers/?limit=20";
+
+xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4) {
+    	var followers = JSON.parse (xhr.responseText);
+    	console.log(followers);
+
+		// List followers on this page
+		for (i = 0; i < followers.data.length; i++) {
+			document.getElementById("followers").value += (followers.data[i].username + ", ");
+		}
+
+		// Check if we are done
+		if (followers.paging.next != null) {
+			url = followers.paging.next;
+			xhr.open ("GET", url, true);
+			xhr.send (null);
+		}
+   	}
+}
+
+xhr.open("GET", url, true);
+xhr.send(null);
+</script>
+
+<p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+
+</body>
+</html>

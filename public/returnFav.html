@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Return Favorites</title>
+</head>
+
+<body>
+
+<h1>Return Favorites</h1>
+
+<p>API key of cloudcast:</p>
+<p><textarea id = "url" rows = "2" cols = "80">https://api.mixcloud.com/b-fore/honda-tt-revolution-2016/favorites/</textarea></p>
+
+<p><button onclick = "loadFavs()">Analyze Favorites</button></p>
+
+<p>Favorites:</p>
+<p><textarea id = "favs" rows = "5" cols = "80"></textarea></p>
+
+<p>Uploaders:</p>
+<p><textarea id = "ups" rows = "10" cols = "80"></textarea></p>
+
+<p>Cloudcast report (by age):</p>
+<p><textarea id = "rep" rows = "30" cols = "80"></textarea></p>
+
+<p></p>
+<p></p>
+<p>Array indices. First: <textarea id = "first" rows = "1" cols = "3">0</textarea> Last: <textarea id = "last" rows = "1" cols = "3">9</textarea>
+<p><button onclick = "openTabs()">Open tabs</button></p>
+
+<p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+
+
+<!-- The following code provides integration with Firebase -->
+<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+<script src="firebase_init.js"></script>
+
+
+<!-- This page requires authentication: add code to support it -->
+<script src="oauth2.js"></script>
+
+
+<!-- The following code implement the functionalites of this page -->
+<script>
+
+// Read access token from cookie
+var access_token = document.cookie.split("=")[1];
+
+// Declare global variables
+var favs = [];
+var ups = [];
+var ccurl = [];
+var age = [];
+var ccasts = [];
+
+// Load favoriting users of cloudcast
+function loadFavs() {
+	var url = document.getElementById("url").value;
+	var xhr1 = new XMLHttpRequest();
+
+	xhr1.onreadystatechange = function() {
+	    if (xhr1.readyState == 4) {
+	    	var obj = JSON.parse (xhr1.responseText);
+
+			// Process favorites on this page
+			for (i = 0; i < obj.data.length; i++) {
+				document.getElementById("favs").value += (obj.data[i].username + ", ");
+				favs[favs.length] = obj.data[i].username;
+			}
+
+			// Check if we are done
+			if (obj.paging.next != null) {
+				url = obj.paging.next;
+				xhr1.open ("GET", url, true);
+				xhr1.send (null);
+			}
+			else {
+				analyzeFavs();
+			}
+	   	}
+	}
+	xhr1.open ("GET", url, true);
+	xhr1.send (null);
+}
+
+
+// Analyze favorites and find uploaders
+function analyzeFavs () {
+		// Sort the favorite arrays
+		favs.sort();
+
+		// Start a counter
+		var j = 0;
+
+		// Determine if user is uploader
+		var url2 = "https://api.mixcloud.com/" + favs[j] + "/";
+		var xhr2 = new XMLHttpRequest();
+
+		xhr2.onreadystatechange = function() {
+		    if (xhr2.readyState == 4) {
+		    	var obj = JSON.parse (xhr2.responseText);
+
+		    	// Check upload count of user
+		    	if (obj.cloudcast_count > 0) {
+		    		document.getElementById("ups").value += (obj.username + ", ");
+		    		ups[ups.length] = obj.username;
+		    	}
+
+		    	// Increase the counter
+		    	j++;
+
+				// Check if we are done
+				if (j < favs.length) {
+					url2 = "https://api.mixcloud.com/" + favs[j] + "/";
+					xhr2.open ("GET", url2, true);
+					xhr2.send (null);
+				}
+				else {
+					analyzeCloudcasts();
+				}
+		   	}
+		}
+		xhr2.open ("GET", url2, true);
+		xhr2.send (null);
+}
+
+
+// Analyze cloudcasts of uploaders
+function analyzeCloudcasts() {
+	// Start a counter to scan through the uploaders
+	var j = 0;
+
+	// Obtain cloudcasts of current uploader from API
+	var url3 = "https://api.mixcloud.com/" + ups[j] + "/cloudcasts/?access_token=" + access_token;
+	var xhr3 = new XMLHttpRequest();
+
+	// Process request
+	xhr3.onreadystatechange = function() {
+		if (xhr3.readyState == 4) {
+			var obj = JSON.parse (xhr3.responseText);
+
+			// Get current date
+			var dw = new Date ();
+			// Subtract 8 days from current date
+			dw.setDate(dw.getDate()-7);
+
+			// Find cloudcasts on current page (CURRENT PAGE ONLY!!!) that are not older than 1 week and not already favorited
+			for (k = 0; k < obj.data.length; k++) {
+				// Get date of cloudcast
+				var dc = new Date (obj.data[k].created_time);
+
+				// Check if cloudcast is not older than one week AND not favorites
+				if (dc.valueOf() >= dw.valueOf() && obj.data[k].favorited==0) {
+					document.getElementById("rep").value += "https://www.mixcloud.com/" + ups[j] + "/uploads/\n";
+					// Add the same uploader URL to the ccurl array
+					ccurl[ccurl.length] = "https://www.mixcloud.com/" + ups[j] + "/uploads/";
+					// Add the age of the cloudcast to the age array
+					age[age.length] = dc.valueOf();
+				}
+			}
+
+			// Increase the uploader counter
+			j++;
+
+			// Check if we are done
+			if (j < ups.length) {
+				url3 = "https://api.mixcloud.com/" + ups[j] + "/cloudcasts/?access_token=" + access_token;
+				xhr3.open ("GET", url3, true);
+				xhr3.send (null);
+			}
+			else {
+				// Create a sorted copy of age
+				var ageS = age.slice();
+				ageS.sort();
+
+				// Clear the rep text area
+				document.getElementById("rep").value = "";
+
+				// Display the URLs by age
+				for (l = 0; l < ageS.length; l++) {
+					// Find the index of the current element of ageS in age
+					IND = age.indexOf(ageS[l]);
+					// Add the respective URL to the text area
+					document.getElementById("rep").value += ccurl[IND] + "\n";
+				}
+
+			}
+		}
+	}
+	xhr3.open ("GET", url3, true);
+	xhr3.send (null);
+
+}
+
+
+// Open tabs
+function openTabs() {
+	var first = document.getElementById("first").value;
+	var last = document.getElementById("last").value;
+
+	// Get cloudcast URL array
+	var ccurl = document.getElementById("rep").value.split("\n");
+
+	// Fix boundaries if needed
+	first = Math.max (0, first);
+	document.getElementById("first").value = first;
+	last = Math.min (last, (ccurl.length-1));
+	document.getElementById("last").value = last;
+
+	for (i = first; i <= last; i++) {
+		console.log(i);
+		url = ccurl[i];
+		window.open(url,i);
+	}
+}
+
+
+</script>
+
+</body>
+</html>

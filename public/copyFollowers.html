@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Copy Power Listeners</title>
+</head>
+
+<body>
+
+<h1>Copy Power Listeners following a User</h1>
+
+<p>Username</p>
+<p><textarea id = "uname" rows = "2" cols = "80">johndigweed</textarea></p>
+<p>Initial offset</p>
+<p><textarea id = "initialOffset" rows = "1" cols = "80">4920</textarea></p>
+
+<p><button onclick = "loadFollowers()">Start</button></p>
+
+<p>Next user to follow: </p>
+<p><textarea id = "nextToFollow" rows = "25" cols = "80"></textarea></p>
+
+<p>Status: </p>
+<p><textarea id = "status" rows = "1" cols = "80"></textarea></p>
+
+<p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+
+
+<!-- The following code provides integration with Firebase -->
+<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+<script src="firebase_init.js"></script>
+
+
+<!-- This page requires authentication: add code to support it -->
+<script src="oauth2.js"></script>
+
+
+<!-- The following code implement the functionalites of this page -->
+<script>
+// Read access token from cookie
+var access_token = document.cookie.split("=")[1];
+
+// Declare global variables
+var followers;
+var i = parseInt (document.getElementById("initialOffset").value);
+var j = 0;
+var INT;
+var INT2;
+var tot = 0;
+var ct = 0;
+
+// Update user lists when appropriate button is clicked
+function loadFollowers() {
+	// Set the status
+	document.getElementById("status").value = "Active"
+
+	// Form URL for API key of user's followers
+	var url = "https://api.mixcloud.com/" + document.getElementById("uname").value + "/followers/?access_token=" + access_token + "&offset=" + i;
+	console.log ("Offset:" + i + "\n");
+
+	// Create a request to get the followers
+	var xhr1 = new XMLHttpRequest();
+
+	xhr1.onreadystatechange = function() {
+	    if (xhr1.readyState == 4) {
+	    	// Parse the JSON response into the GLOBAL variable followers
+	    	followers = JSON.parse (xhr1.responseText);
+
+	    	// Reset page follower counter
+	    	j = 0;
+
+	    	// Set interval to scan through the users on this page
+	    	INT = setInterval(moreInfo, 5000);
+	   	}
+	}
+
+	xhr1.open ("GET", url, true);
+	xhr1.send (null);
+}
+
+
+// Gather more info on a user
+function moreInfo () {
+	// Form URL for API key of user info
+	var url2 = "https://api.mixcloud.com/" + followers.data[j].username + "/?access_token=" + access_token;
+	// Display the username
+	document.getElementById("nextToFollow").value = followers.data[j].username + "\n\n";
+	// Increase the counter for total processed users
+	tot++;
+
+	// Update statistics
+	document.getElementById("status").value = "Active. Found " + ct + " power listeners in " + tot + " users (" + ct/tot*100 + "%).";
+
+	// Log the value of the page counter
+	console.log (j);
+
+	// Increase the page counter
+	j++;
+
+	// Check if the page is done, in which case we need to load a new page of followers
+	if (j >= 20) {
+		clearInterval (INT);
+		i += 20;
+		loadFollowers();
+	}
+
+	// Create a request to get the info
+	var xhr2 = new XMLHttpRequest();
+
+	xhr2.onreadystatechange = function() {
+		if (xhr2.readyState == 4) {
+			// Get the JSON object
+	    	var obj = JSON.parse (xhr2.responseText);
+
+			// Display user info
+			document.getElementById("nextToFollow").value += "Following: " + obj.following + ".\n";
+			document.getElementById("nextToFollow").value += "Favorite count: " + obj.favorite_count + ".\n";
+			document.getElementById("nextToFollow").value += "Listen count: " + obj.listen_count + ".\n";
+			document.getElementById("nextToFollow").value += "Upload count: " + obj.cloudcast_count + ".\n\n";
+
+			// Check if user is already followed
+			if (obj.following == 1) {
+				document.getElementById("nextToFollow").value += "User is already followed and will be SKIPPED.\n\n";
+			}
+			else {
+				// Check the listen and favorite count
+				if ((obj.favorite_count >= 30 || obj.listen_count >= 30) && obj.cloudcast_count == 0) {
+					document.getElementById("nextToFollow").value += "User is a POWER LISTENER and WILL be followed!\n\n";
+					ct++;
+					performFollow (obj.username);
+				}
+				else {
+					document.getElementById("nextToFollow").value += "User is NOT a power listener and will NOT be followed.\n\n";
+				}
+			}
+		}
+	}
+
+	// Fire the request
+	xhr2.open ("GET", url2, true);
+	xhr2.send (null);
+}
+
+
+// Do the following
+function performFollow (uname) {
+	// Build the follow request
+	var xhr3 = new XMLHttpRequest();
+	var url3 = "https://api.mixcloud.com/" + uname + "/follow/?access_token=" + access_token;
+
+	xhr3.onreadystatechange = function() {
+	    if (xhr3.readyState == 4) {
+	    	var obj;
+	    	try {
+	    		obj = JSON.parse (xhr3.responseText);
+	    	}
+	    	catch (err) {
+	    		// Clear interval and terminate, daily follow limit met
+	    		clearInterval (INT);
+	    		document.getElementById ("status").value = "Daily limit met. Followed " + ct + " power listeners.";
+	    		return;
+	    	}
+
+	    	document.getElementById("nextToFollow").value += xhr3.responseText;
+
+
+	    	// Check the result of the request
+	    	if ("error" in obj) {
+	    		if ("retry_after" in obj.error) {
+	    			// There was a rate limit problem, we need to wait
+	    			ct--;
+	    			tot--;
+	    			// Clear interval for following users
+	    			clearInterval (INT);
+	    			// Set a new interval for waiting
+	    			INT2 = setInterval (waitBox, 1000);
+	    			// Set the number of second to wait
+	    			sec = obj.error.retry_after+5;
+	    		}
+	    	}
+	   	}
+	}
+
+	// Fire the request
+	xhr3.open ("POST", url3, true);
+	xhr3.setRequestHeader ("Content-type","application/x-www-form-urlencoded");
+	xhr3.send ("method=post");
+}
+
+
+// Waiting function
+function waitBox () {
+	// Update the wait box
+	document.getElementById ("status").value = "Found " + ct + " power listeners. Waiting: " + sec + " seconds remaining...";
+	sec--;
+
+	// When the waiting time is up, resume following
+	if (sec==0) {
+		document.getElementById ("status").value = "Active";
+		clearInterval (INT2);
+		j--;
+		INT = setInterval(moreInfo, 5000);
+	}
+}
+
+</script>
+
+</body>
+</html>
