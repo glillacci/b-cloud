@@ -1,25 +1,36 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+  <meta charset="UTF-8">
+  <title>Test OAuth2</title>
+  <link href="./style/style.css" rel="stylesheet"/>
 </head>
 
 <body>
 
-<h1>Test OAuth2 authentication</h1>
+  <h1>Test OAuth2 authentication</h1>
 
-<p>Authenticated user information:</p>
-<p><textarea id = "userdata" rows = "10" cols = "80"></textarea></p>
+  <p>Authenticated user information:</p>
+  <p><textarea id = "userdata" rows = "10" cols = "80"></textarea></p>
 
-<p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+  <p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+
+  <footer>
+      <a href="https://www.freepik.com/free-vector/cloud-sky-background_979616.htm"
+        target="_blank">Background image by Freepik</a>
+  </footer>
+
+</body>
 
 
 <!-- The following code provides integration with Firebase -->
 <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
-<script src="firebase_init.js"></script>
+<script src="./script/firebase_init.js"></script>
 
 
 <!-- This page requires authentication: add code to support it -->
-<script src="oauth2.js"></script>
+<script src="./script/oauth2.js"></script>
 
 
 <!-- The following code implement the functionalites of this page -->
@@ -55,5 +66,5 @@ userDataRequest.send(null);
 
 </script>
 
-</body>
+
 </html>

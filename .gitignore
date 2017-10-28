@@ -1,4 +1,4 @@
-public/config.json
 firebase.json
 .firebaserc
-firebase_config.json
+public/script/config.json
+public/script/firebase_config.json
