@@ -30,33 +30,7 @@
 
 
 <!-- The following code implement the functionalites of this page -->
-<script>
-  var xhr = new XMLHttpRequest();
-  var url = "https://api.mixcloud.com/b-fore/followers/?limit=20";
-
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState == 4) {
-      var followers = JSON.parse (xhr.responseText);
-      console.log(followers);
-
-      // List followers on this page
-      for (i = 0; i < followers.data.length; i++) {
-        document.getElementById("followers").value += (followers.data[i].
-          username + ", ");
-      }
-
-      // Check if we are done
-      if (followers.paging.next != null) {
-        url = followers.paging.next;
-        xhr.open ("GET", url, true);
-        xhr.send (null);
-      }
-    }
-  }
-
-  xhr.open("GET", url, true);
-  xhr.send(null);
-</script>
+<script src="./script/listFollowers.js"></script>
 
 
 </html>
