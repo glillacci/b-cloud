@@ -2,70 +2,100 @@
 <html>
 
 <head>
-<meta charset="UTF-8">
-<title>Analyze Cloudcast Favorites</title>
+  <meta charset="UTF-8">
+  <title>Analyze Cloudcast Favorites</title>
+  <link href="./style/style.css" rel="stylesheet"/>
 </head>
 
 <body>
 
-<h1>Analyze Cloudcast Favorites</h1>
+  <h1>Analyze Cloudcast Favorites</h1>
 
- <p>API key(s) of previous cloudcast(s) (one per line):</p>
-<!--  <p><textarea id = "url" rows = "10" cols = "80">http://api.mixcloud.com/b-fore/b-fore-switzerland-mazdasounds/favorites/ -->
-<!--  http://api.mixcloud.com/b-fore/b-fore-the-music-15/favorites/ -->
-<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-14-2015-year-in-review/favorites/ -->
-<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-13/favorites/ -->
-<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-12-one-year-anniversary-episode/favorites/ -->
-<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-11/favorites/ -->
-<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-10/favorites/ -->
-<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-9/favorites/ -->
-<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-8/favorites/ -->
-<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-7/favorites/ -->
-<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-6/favorites/ -->
-<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-5/favorites/ -->
-<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-4/favorites/ -->
-<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-3/favorites/ -->
-<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-2/favorites/ -->
-<!-- http://api.mixcloud.com/b-fore/b-fore-the-music-1/favorites/</textarea></p> -->
+  <p>API key(s) of previous cloudcast(s) (one per line):</p>
+<!--  <p><textarea id = "url" rows = "10" cols = "80">https://api.mixcloud.com/b-fore/b-fore-switzerland-mazdasounds/favorites/ -->
+<!--  https://api.mixcloud.com/b-fore/b-fore-the-music-15/favorites/ -->
+<!-- https://api.mixcloud.com/b-fore/b-fore-the-music-14-2015-year-in-review/favorites/ -->
+<!-- https://api.mixcloud.com/b-fore/b-fore-the-music-13/favorites/ -->
+<!-- https://api.mixcloud.com/b-fore/b-fore-the-music-12-one-year-anniversary-episode/favorites/ -->
+<!-- https://api.mixcloud.com/b-fore/b-fore-the-music-11/favorites/ -->
+<!-- https://api.mixcloud.com/b-fore/b-fore-the-music-10/favorites/ -->
+<!-- https://api.mixcloud.com/b-fore/b-fore-the-music-9/favorites/ -->
+<!-- https://api.mixcloud.com/b-fore/b-fore-the-music-8/favorites/ -->
+<!-- https://api.mixcloud.com/b-fore/b-fore-the-music-7/favorites/ -->
+<!-- https://api.mixcloud.com/b-fore/b-fore-the-music-6/favorites/ -->
+<!-- https://api.mixcloud.com/b-fore/b-fore-the-music-5/favorites/ -->
+<!-- https://api.mixcloud.com/b-fore/b-fore-the-music-4/favorites/ -->
+<!-- https://api.mixcloud.com/b-fore/b-fore-the-music-3/favorites/ -->
+<!-- https://api.mixcloud.com/b-fore/b-fore-the-music-2/favorites/ -->
+<!-- https://api.mixcloud.com/b-fore/b-fore-the-music-1/favorites/</textarea></p> -->
 
-<p><textarea id = "url" rows = "10" cols = "80">http://api.mixcloud.com/b-fore/feeling-like-nu-3/favorites/
-http://api.mixcloud.com/b-fore/dj-awards-2015-bedroom-dj-competition-b-fore/favorites/
-http://api.mixcloud.com/b-fore/feeling-like-nu-2/favorites/
-http://api.mixcloud.com/b-fore/feeling-like-nu-1/favorites/</textarea></p>
+  <p>
+    <textarea id="url" rows="10" cols="80">https://api.mixcloud.com/b-fore/feeling-like-nu-3/favorites/
+https://api.mixcloud.com/b-fore/dj-awards-2015-bedroom-dj-competition-b-fore/favorites/
+https://api.mixcloud.com/b-fore/feeling-like-nu-2/favorites/
+https://api.mixcloud.com/b-fore/feeling-like-nu-1/favorites/</textarea>
+  </p>
 
-<p>API key of current cloudcast:</p>
-<p><textarea id = "url2" rows = "2" cols = "80">http://api.mixcloud.com/b-fore/honda-tt-revolution-2016/favorites/</textarea></p>
+  <p>API key of current cloudcast:</p>
+  <p>
+    <textarea id="url2" rows="2" cols="80">https://api.mixcloud.com/b-fore/honda-tt-revolution-2016/favorites/</textarea>
+  </p>
 
-<p><button onclick = "loadFavs()">Analyze favorites</button></p>
+  <p>
+    <button onclick="loadFavs()">Analyze favorites</button>
+  </p>
 
-<p>Previous favorites:</p>
-<p><textarea id = "prev" rows = "10" cols = "80"></textarea></p>
+  <p>Previous favorites:</p>
+  <p>
+    <textarea id="prev" rows="10" cols="80"></textarea>
+  </p>
 
-<p>Current favorites:</p>
-<p><textarea id = "curr" rows = "10" cols = "80"></textarea></p>
+  <p>Current favorites:</p>
+  <p>
+    <textarea id="curr" rows="10" cols="80"></textarea>
+  </p>
 
-<p>Returing favorites:</p>
-<p><textarea id = "ret" rows = "10" cols = "80"></textarea></p>
+  <p>Returing favorites:</p>
+  <p>
+    <textarea id="ret" rows="10" cols="80"></textarea>
+  </p>
 
-<p>Non-returing favorites:</p>
-<p><textarea id = "nret" rows = "10" cols = "80"></textarea></p>
+  <p>Non-returing favorites:</p>
+  <p>
+    <textarea id = "nret" rows = "10" cols = "80"></textarea>
+  </p>
 
-<p>New favorites:</p>
-<p><textarea id = "newfav" rows = "10" cols = "80"></textarea></p>
+  <p>New favorites:</p>
+  <p>
+    <textarea id = "newfav" rows = "10" cols = "80"></textarea>
+  </p>
 
-<p></p>
-<p></p>
-<p>Array indices. First: <textarea id = "first" rows = "1" cols = "3">0</textarea> Last: <textarea id = "last" rows = "1" cols = "3">9</textarea>
-<p><button onclick = "openTabs()">Open tabs NON-RETURNING</button></p>
-<p><button onclick = "openTabsNF()">Open tabs NEW</button></p>
-<p><button onclick = "openTabsRF()">Open tabs RETURNING</button></p>
+  <p></p>
+  <p></p>
+  <p>Array indices. First: <textarea id="first" rows="1" cols="3">0</textarea> Last: <textarea id="last" rows="1" cols="3">9</textarea>
+  <p>
+    <button onclick = "openTabs()">Open tabs NON-RETURNING</button>
+  </p>
+  <p>
+    <button onclick = "openTabsNF()">Open tabs NEW</button>
+  </p>
+  <p>
+    <button onclick = "openTabsRF()">Open tabs RETURNING</button>
+  </p>
 
-<p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+  <p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+
+  <footer>
+      <a href="https://www.freepik.com/free-vector/cloud-sky-background_979616.htm"
+        target="_blank">Background image by Freepik</a>
+  </footer>
+
+</body>
 
 
 <!-- The following code provides integration with Firebase -->
 <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
-<script src="firebase_init.js"></script>
+<script src="./script/firebase_init.js"></script>
 
 
 <!-- The following code implement the functionalites of this page -->
@@ -259,5 +289,4 @@ function openTabsRF() {
 
 </script>
 
-</body>
 </html>

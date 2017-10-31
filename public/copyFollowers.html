@@ -2,37 +2,53 @@
 <html>
 
 <head>
-<meta charset="UTF-8">
-<title>Copy Power Listeners</title>
+  <meta charset="UTF-8">
+  <title>Copy Power Listeners</title>
+  <link href="./style/style.css" rel="stylesheet"/>
 </head>
 
 <body>
 
-<h1>Copy Power Listeners following a User</h1>
+	<h1>Copy Power Listeners following a User</h1>
 
-<p>Username</p>
-<p><textarea id = "uname" rows = "2" cols = "80">johndigweed</textarea></p>
-<p>Initial offset</p>
-<p><textarea id = "initialOffset" rows = "1" cols = "80">4920</textarea></p>
+	<p>Username</p>
+	<p>
+		<textarea id = "uname" rows = "2" cols = "80">johndigweed</textarea>
+	</p>
+	<p>Initial offset</p>
+	<p>
+		<textarea id = "initialOffset" rows = "1" cols = "80">4920</textarea>
+	</p>
 
-<p><button onclick = "loadFollowers()">Start</button></p>
+	<p>
+		<button onclick = "loadFollowers()">Start</button>
+	</p>
 
-<p>Next user to follow: </p>
-<p><textarea id = "nextToFollow" rows = "25" cols = "80"></textarea></p>
+	<p>Next user to follow: </p>
+	<p>
+		<textarea id = "nextToFollow" rows = "25" cols = "80"></textarea>
+	</p>
 
-<p>Status: </p>
-<p><textarea id = "status" rows = "1" cols = "80"></textarea></p>
+	<p>Status: </p>
+	<p>
+		<textarea id = "status" rows = "1" cols = "80"></textarea>
+	</p>
 
-<p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+	<p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
 
+	<footer>
+			<a href="https://www.freepik.com/free-vector/cloud-sky-background_979616.htm"
+				target="_blank">Background image by Freepik</a>
+	</footer>
+</body>
 
 <!-- The following code provides integration with Firebase -->
 <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
-<script src="firebase_init.js"></script>
+<script src="./script/firebase_init.js"></script>
 
 
 <!-- This page requires authentication: add code to support it -->
-<script src="oauth2.js"></script>
+<script src="./script/oauth2.js"></script>
 
 
 <!-- The following code implement the functionalites of this page -->
@@ -202,8 +218,6 @@ function waitBox () {
 		INT = setInterval(moreInfo, 5000);
 	}
 }
-
 </script>
 
-</body>
 </html>

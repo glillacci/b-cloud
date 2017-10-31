@@ -19,7 +19,7 @@ configFileRequest.onreadystatechange = function() {
 }
 
 // Initialize and send the request
-configFileRequest.open("GET", "config.json", true);
+configFileRequest.open("GET", "./script/config.json", true);
 configFileRequest.send(null);
 
 

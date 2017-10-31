@@ -1,0 +1,73 @@
+@import url(https://fonts.googleapis.com/css?family=Lato);
+
+* {
+  font-family: 'Lato', sans-serif;
+}
+
+body {
+  background-image: url(./bg_clouds.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  text-align: center;
+}
+
+footer {
+  text-align: center;
+}
+
+footer a {
+  color: #ff9933;
+  text-decoration: none;
+}
+
+p {
+  color: #0066ff;
+  font-size: 20px;
+}
+
+p a {
+  color: #ff9933;
+  text-decoration: none;
+}
+
+.bfore{
+  display: inline-block;
+  background: #ff9933;
+  color: white;
+  padding: 0 10px;
+}
+
+h1 {
+  text-transform: uppercase;
+  font-size: 60px;
+  color: #ff9933;
+  text-align: center;
+}
+
+h2 {
+  text-align: center;
+  color: #0066ff;
+}
+
+ul {
+  list-style-type: none;
+  text-align: center;
+}
+
+li a {
+  width: 600px;
+  display: inline-block;
+  color: #0066ff;
+  padding: 10px;
+  text-decoration: none;
+}
+
+li a:hover {
+  background-color: #ff9933;
+  color: white;
+}
+
+.main_menu li {
+  font-size: 30px;
+  padding: 20px;
+}

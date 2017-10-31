@@ -2,43 +2,63 @@
 <html>
 
 <head>
-<meta charset="UTF-8">
-<title>Return Favorites</title>
+  <meta charset="UTF-8">
+  <title>Return Favorites</title>
+  <link href="./style/style.css" rel="stylesheet"/>
 </head>
 
 <body>
 
-<h1>Return Favorites</h1>
+	<h1>Return Favorites</h1>
 
-<p>API key of cloudcast:</p>
-<p><textarea id = "url" rows = "2" cols = "80">https://api.mixcloud.com/b-fore/honda-tt-revolution-2016/favorites/</textarea></p>
+	<p>API key of cloudcast:</p>
+	<p>
+		<textarea id="url" rows="2" cols="80">https://api.mixcloud.com/b-fore/honda-tt-revolution-2016/favorites/</textarea>
+	</p>
 
-<p><button onclick = "loadFavs()">Analyze Favorites</button></p>
+	<p>
+		<button onclick="loadFavs()">Analyze Favorites</button>
+	</p>
 
-<p>Favorites:</p>
-<p><textarea id = "favs" rows = "5" cols = "80"></textarea></p>
+	<p>Favorites:</p>
+	<p>
+		<textarea id="favs" rows="5" cols="80"></textarea>
+	</p>
 
-<p>Uploaders:</p>
-<p><textarea id = "ups" rows = "10" cols = "80"></textarea></p>
+	<p>Uploaders:</p>
+	<p>
+		<textarea id="ups" rows="10" cols="80"></textarea>
+	</p>
 
-<p>Cloudcast report (by age):</p>
-<p><textarea id = "rep" rows = "30" cols = "80"></textarea></p>
+	<p>Cloudcast report (by age):</p>
+	<p>
+		<textarea id="rep" rows="30" cols="80"></textarea>
+	</p>
 
-<p></p>
-<p></p>
-<p>Array indices. First: <textarea id = "first" rows = "1" cols = "3">0</textarea> Last: <textarea id = "last" rows = "1" cols = "3">9</textarea>
-<p><button onclick = "openTabs()">Open tabs</button></p>
+	<p></p>
+	<p></p>
+	<p>Array indices. First: <textarea id="first" rows="1" cols="3">0</textarea> Last: <textarea id="last" rows="1" cols="3">9</textarea>
+	<p>
+		<button onclick="openTabs()">Open tabs</button>
+	</p>
 
-<p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+	<p>Back to <a href="./index.html">B-FORE in the Cloud</a></p>
+
+	<footer>
+      <a href="https://www.freepik.com/free-vector/cloud-sky-background_979616.htm"
+        target="_blank">Background image by Freepik</a>
+  </footer>
+
+</body>
 
 
 <!-- The following code provides integration with Firebase -->
 <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
-<script src="firebase_init.js"></script>
+<script src="./script/firebase_init.js"></script>
 
 
 <!-- This page requires authentication: add code to support it -->
-<script src="oauth2.js"></script>
+<script src="./script/oauth2.js"></script>
 
 
 <!-- The following code implement the functionalites of this page -->
@@ -215,8 +235,6 @@ function openTabs() {
 	}
 }
 
-
 </script>
 
-</body>
 </html>

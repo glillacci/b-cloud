@@ -19,5 +19,5 @@ firebaseConfigRequest.onreadystatechange = function() {
     }
 }
 // Initialize and send the request
-firebaseConfigRequest.open("GET", "firebase_config.json", true);
+firebaseConfigRequest.open("GET", "./script/firebase_config.json", true);
 firebaseConfigRequest.send(null);

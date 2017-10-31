@@ -2,43 +2,55 @@
 <html>
 
 <head>
-<meta charset="UTF-8">
-<title>Clean up</title>
+  <meta charset="UTF-8">
+  <title>Clean Up</title>
+  <link href="./style/style.css" rel="stylesheet"/>
 </head>
 
 <body>
 
-<h1>Clean up</h1>
+  <h1>Clean up</h1>
 
-<p>Users you follow:</p>
-<p><textarea id = "following" rows = "10" cols = "80"></textarea></p>
+  <p>Users you follow:</p>
+  <p><textarea id = "following" rows = "10" cols = "80"></textarea></p>
 
-<p>Users that follow you:</p>
-<p><textarea id = "followers" rows = "10" cols = "80"></textarea></p>
+  <p>Users that follow you:</p>
+  <p><textarea id = "followers" rows = "10" cols = "80"></textarea></p>
 
-<p>Users you follow that are not following you back:</p>
-<p><textarea id = "nonfollowers" rows = "20" cols = "80"></textarea></p>
-<p></p>
-<p></p>
+  <p>Users you follow that are not following you back:</p>
+  <p><textarea id = "nonfollowers" rows = "20" cols = "80"></textarea></p>
+  <p></p>
+  <p></p>
 
-<p><button onclick = "cleanUp()">Start clean up</button>
-  <button onclick = "stopCleanUp()">Stop clean up</button>
-  <textarea id = "waiting" rows = "1" cols = "50"></textarea></p>
+  <p>
+    <button onclick = "cleanUp()">Start clean up</button>
+    <button onclick = "stopCleanUp()">Stop clean up</button>
+    <textarea id = "waiting" rows = "1" cols = "50"></textarea>
+  </p>
 
-<p></p>
-<p>Next user to unfollow: </p>
-<p><textarea id = "nextToUnfollow" rows = "10" cols = "80"></textarea></p>
+  <p></p>
+  <p>Next user to unfollow: </p>
+  <p>
+    <textarea id = "nextToUnfollow" rows = "10" cols = "80"></textarea>
+  </p>
 
-<p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+  <p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+
+  <footer>
+      <a href="https://www.freepik.com/free-vector/cloud-sky-background_979616.htm"
+        target="_blank">Background image by Freepik</a>
+  </footer>
+  
+</body>
 
 
 <!-- The following code provides integration with Firebase -->
 <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
-<script src="firebase_init.js"></script>
+<script src="./script/firebase_init.js"></script>
 
 
 <!-- This page requires authentication: add code to support it -->
-<script src="oauth2.js"></script>
+<script src="./script/oauth2.js"></script>
 
 
 <!-- The following code implement the functionalites of this page -->
@@ -236,9 +248,6 @@ function waitBox () {
 		INT = setInterval (unfollowNext, 5000);
 	}
 }
-
-
 </script>
 
-</body>
 </html>
