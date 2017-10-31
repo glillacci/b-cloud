@@ -2,23 +2,24 @@
 <html>
 
 <head>
-<meta charset="UTF-8">
-<title>Find Cloudcasts</title>
+  <meta charset="UTF-8">
+  <title>Highlighted Users</title>
+  <link href="./style/style.css" rel="stylesheet"/>
 </head>
 
 <body>
 
-<h1>Find latest cloudcasts of highlighted users</h1>
+	<h1>Find latest cloudcasts of highlighted users</h1>
 
-<p>Highlighted users (one per line):</p>
-<p><textarea id = "hus" rows = "10" cols = "80">All_In
+	<p>Highlighted users (one per line):</p>
+	<p>
+		<textarea id="hus" rows="10" cols="80">All_In
 Bawaka
 Concept_DJ
 DJTJDJTJ
 DJ_ETA
 DjMaxvanNeudeck
 Gerloni_Ludwig_Federico
-Kawenzo
 MaLeeCoDeeJ
 OrisAKaTongadj
 RTT1
@@ -78,28 +79,42 @@ randygodsey
 Seb_du_Bollwerk
 medectric
 seantonning
-arrydidi</textarea></p>
+arrydidi</textarea>
+	</p>
 
-<p><button onclick = "loadCcast()">Load cloudcasts</button></p>
+	<p>
+		<button onclick="loadCcast()">Load cloudcasts</button>
+	</p>
 
-<p>Cloudcast report (by age):</p>
-<p><textarea id = "rep" rows = "30" cols = "80"></textarea></p>
+	<p>Cloudcast report (by age):</p>
+	<p>
+		<textarea id="rep" rows="30" cols="80"></textarea>
+	</p>
 
-<p></p>
-<p></p>
-<p>Array indices. First: <textarea id = "first" rows = "1" cols = "3">0</textarea> Last: <textarea id = "last" rows = "1" cols = "3">9</textarea>
-<p><button onclick = "openTabs()">Open tabs</button></p>
+	<p></p>
+	<p></p>
+	<p>Array indices. First: <textarea id="first" rows="1" cols="3">0</textarea> Last: <textarea id="last" rows="1" cols="3">9</textarea>
+	<p>
+		<button onclick="openTabs()">Open tabs</button>
+	</p>
 
-<p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+	<p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+
+	<footer>
+			<a href="https://www.freepik.com/free-vector/cloud-sky-background_979616.htm"
+				target="_blank">Background image by Freepik</a>
+	</footer>
+
+</body>
 
 
 <!-- The following code provides integration with Firebase -->
 <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
-<script src="firebase_init.js"></script>
+<script src="./script/firebase_init.js"></script>
 
 
 <!-- This page requires authentication: add code to support it -->
-<script src="oauth2.js"></script>
+<script src="./script/oauth2.js"></script>
 
 
 <!-- The following code implement the functionalites of this page -->
@@ -217,5 +232,5 @@ function openTabs() {
 
 </script>
 
-</body>
+
 </html>

@@ -2,45 +2,69 @@
 <html>
 
 <head>
+  <meta charset="UTF-8">
+  <title>Copy Favorites</title>
+  <link href="./style/style.css" rel="stylesheet"/>
 </head>
 
 <body>
 
-<h1>Copy favorites</h1>
+  <h1>Copy favorites</h1>
 
-<p>URL of cloudcast:</p>
-<p><textarea id = "url" rows = "2" cols = "80">https://api.mixcloud.com/stephanbreuer32/deep-house-after-sunset-mix/favorites/</textarea></p>
-<p><button onclick = "rebuildLists()">Load favorite list</button></p>
+  <p>URL of cloudcast:</p>
+  <p>
+    <textarea id="url" rows="2" cols="80">https://api.mixcloud.com/stephanbreuer32/deep-house-after-sunset-mix/favorites/</textarea>
+  </p>
+  <p>
+    <button onclick="rebuildLists()">Load favorite list</button>
+  </p>
 
-<p>Users that favorited it:</p>
-<p><textarea id = "favorites" rows = "5" cols = "80"></textarea></p>
+  <p>Users that favorited it:</p>
+  <p>
+    <textarea id="favorites" rows="5" cols="80"></textarea>
+  </p>
 
-<p>Users you follow:</p>
-<p><textarea id = "following" rows = "5" cols = "80"></textarea></p>
+  <p>Users you follow:</p>
+  <p>
+    <textarea id="following" rows="5" cols="80"></textarea>
+  </p>
 
-<p>Users that favorited the cloudcast that you are not already following:</p>
-<p><textarea id = "nonfollowed" rows = "5" cols = "80"></textarea></p>
-<p></p>
-<p></p>
+  <p>Users that favorited the cloudcast that you are not already following:</p>
+  <p>
+    <textarea id="nonfollowed" rows="5" cols="80"></textarea>
+  </p>
+  <p></p>
+  <p></p>
 
-<p><button onclick = "massFollow()">Start mass follow</button>
-  <button onclick = "stopFollow()">Stop mass follow</button>
-  <textarea id = "waiting" rows = "1" cols = "50"></textarea></p>
+  <p>
+    <button onclick="massFollow()">Start mass follow</button>
+    <button onclick="stopFollow()">Stop mass follow</button>
+    <textarea id="waiting" rows="1" cols="50"></textarea>
+  </p>
 
-<p></p>
-<p>Next user to follow: </p>
-<p><textarea id = "nextToFollow" rows = "15" cols = "80"></textarea></p>
+  <p></p>
+  <p>Next user to follow: </p>
+  <p>
+    <textarea id="nextToFollow" rows="15" cols="80"></textarea>
+  </p>
 
-<p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+  <p>Back to <a href="index.html">B-FORE in the Cloud</a></p>
+
+  <footer>
+      <a href="https://www.freepik.com/free-vector/cloud-sky-background_979616.htm"
+        target="_blank">Background image by Freepik</a>
+  </footer>
+
+</body>
 
 
 <!-- The following code provides integration with Firebase -->
 <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
-<script src="firebase_init.js"></script>
+<script src="./script/firebase_init.js"></script>
 
 
 <!-- This page requires authentication: add code to support it -->
-<script src="oauth2.js"></script>
+<script src="./script/oauth2.js"></script>
 
 
 <!-- The following code implement the functionalites of this page -->
@@ -221,5 +245,4 @@ function waitBox () {
 
 </script>
 
-</body>
 </html>
